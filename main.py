@@ -4,13 +4,15 @@ import random
 import os
 from dotenv import load_dotenv
 import openai
-
+import pyttsx3
 
 load_dotenv()
 
 api_key = os.getenv("API_KEY")
 openai.api_key = os.getenv("API_KEY")
 
+# Initialize the TTS engine
+engine = pyttsx3.init()
 
 def get_random_file(folder_path):
     # Get a list of files in the specified directory
@@ -25,13 +27,17 @@ def get_random_file(folder_path):
     random_file = random.choice(files)
     return random_file
 
-
 def play_music():
     pygame.mixer.init()
     music_file = get_random_file("./music/")
     if music_file:
         pygame.mixer.music.load("./music/" + music_file)
         pygame.mixer.music.play(-1)
+
+def speak_text(text):
+    """Uses pyttsx3 to speak the given text."""
+    engine.say(text)
+    engine.runAndWait()
 
 def submit_text():
     user_input = text_entry.get()
@@ -50,10 +56,22 @@ def submit_text():
     # Extract and display the response
     reply = response.choices[0].message['content']
     response_label.config(text=f"Oracle says: {reply}")  # Update the label with the response
+    
+    # Speak the response
+    speak_text(reply)
+
+def on_exit():
+    """Handles cleanup on program exit."""
+    pygame.mixer.music.stop()  # Stop the music
+    engine.stop()  # Stop the text-to-speech engine
+    root.destroy()  # Close the Tkinter window
 
 root = tk.Tk()
 root.title("Oracle")
 root.geometry("400x300")
+
+# Bind the on_exit function to the window close event
+root.protocol("WM_DELETE_WINDOW", on_exit)
 
 label = tk.Label(root, text="Ask me", font=("Helvetica", 14))
 label.pack(pady=20)
@@ -70,3 +88,4 @@ response_label.pack(pady=20)
 
 play_music()
 root.mainloop()
+
