@@ -1,15 +1,10 @@
 from dotenv import load_dotenv
 import openai
 import os
-
-
-
 load_dotenv()
 
 api_key = os.getenv("API_KEY")
 openai.api_key = os.getenv("API_KEY")
-
-
 
 question = input("Fråga mig: ")
 response = openai.ChatCompletion.create(

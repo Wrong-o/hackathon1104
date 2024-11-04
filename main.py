@@ -1,5 +1,7 @@
 import tkinter as tk
 import pygame
+import random
+import os
 
 def play_music():
     pygame.mixer.init()
@@ -12,7 +14,7 @@ def submit_text():
     text_entry.delete(0, tk.END)
 
 root = tk.Tk()
-root.title("jgf")
+root.title("Oracle")
 root.geometry("400x200")
 
 label = tk.Label(root, text="Ask me",font=("Helvetica",14))
